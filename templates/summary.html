@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="budget" style="width: 18rem;">
+    <h1>Your income:</h1>
+{% for b in budgets %}
+    <p>Your amount is: {{e.amount}}</p>
+    <P>The description is: {{e.description}}</P>
+{% endfor %}
+</div>
+
+<div class="card" style="width: 18rem;">
+    <h1>Your expenses:</h1>
+{% for e in expenses %}
+    <p>Your amount is: {{e.amount}}</p>
+    <P>The description is: {{e.description}}</P>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
