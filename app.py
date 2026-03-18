@@ -1,9 +1,14 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 
 app = Flask(__name__)
+app.secret_key = "secretkey123"
 
-app.route("/")
+@app.route("/", METHODS=["POST"])
 def home():
+    None
+
+@app.route("/summary")
+def summary():
     None
 
 if __name__ == '__main__':
