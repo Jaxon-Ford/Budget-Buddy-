@@ -3,17 +3,27 @@
 
 <h1>Welcome to Budget Tracker</h1>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for m in messages %}
+                    <li style="color:red">{{m}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
     <h2>Add Income</h2>
     <form method="POST" action="/income_submission">
-        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
-        <input type="text" name="description" placeholder="Description" required>
+        <input type="number" step="0.01" name="amount" placeholder="Amount">
+        <input type="text" name="description" placeholder="Description">
         <button type="submit">Add Income</button>
     </form>
 
     <h2>Add Expense</h2>
-    <form method="POST" action="expense_submission">
-        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
-        <input type="text" name="description" placeholder="Description" required>
+    <form method="POST" action="/expense_submission">
+        <input type="number" step="0.01" name="amount" placeholder="Amount">
+        <input type="text" name="description" placeholder="Description">
         <button type="submit">Add Expense</button>
     </form>
 

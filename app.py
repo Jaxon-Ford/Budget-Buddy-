@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session, render_template
+from flask import Flask, request, session, render_template, flash
 from models import *
 
 app = Flask(__name__)
@@ -16,16 +16,29 @@ def home():
 def income_submission():
     global INCOMES
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data"}), 400
-    try:
-        income_amount = int(data.get("amount"))
-    except ValueError:
-        return jsonify({"error": "Non-Numerical Amount"}), 400
-    income_description = data.get("description")
-    INCOMES += {"id" : len(INCOMES), "income": income_amount, "description": income_description}
+    income_amount = request.form["amount"]
+    income_description = request.form["description"]
 
+    error = False
+    if not income_amount:
+        flash("Please specify income amount")
+        error = True
+    else:
+        try:
+            income_amount = float(income_amount)
+            if income_amount <= 0:
+                flash("Please enter positive income")
+                error = True
+        except ValueError:
+            flash("Please enter numerical income")
+            error = True
+    if not income_description:
+        flash("Please enter income description")
+        error = True
+    if error:
+        return render_template("index.html")
+
+    INCOMES.append({"id" : len(INCOMES), "amount": income_amount, "description": income_description})
     return render_template("/index.html", income_amount=income_amount, income_description=income_description)
 
 
@@ -33,16 +46,29 @@ def income_submission():
 def expense_submission():
     global EXPENSES
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data"}), 400
-    try:
-        expense_amount = int(data.get("amount"))
-    except ValueError:
-        return jsonify({"error": "Non-Numerical Amount"}), 400
-    expense_description = data.get("description")
-    EXPENSES += {"id": len(EXPENSES), "income": expense_amount, "description": expense_description}
+    expense_amount = request.form["amount"]
+    expense_description = request.form["description"]
 
+    error = False
+    if not expense_amount:
+        flash("Please specify expense amount")
+        error = True
+    else:
+        try:
+            expense_amount = float(expense_amount)
+            if expense_amount <= 0:
+                flash("Please enter positive expense")
+                error = True
+        except ValueError:
+            flash("Please enter numerical expense")
+            error = True
+    if not expense_description:
+        flash("Please enter expense description")
+        error = True
+    if error:
+        return render_template("index.html")
+
+    EXPENSES.append({"id": len(EXPENSES), "amount": expense_amount, "description": expense_description})
     return render_template("/index.html", expense_amount=expense_amount, expense_description=expense_description)
 
 
@@ -52,7 +78,7 @@ def summary():
 
     if not INCOMES and not EXPENSES:
         return render_template("index.html")
-    return render_template("summary.html")
+    return render_template("summary.html", budgets=INCOMES, expenses=EXPENSES)
 
 
 @app.route("/reset")
