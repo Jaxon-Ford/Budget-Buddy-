@@ -4,19 +4,36 @@
 <div class="budget" style="width: 18rem;">
     <h1>Your income:</h1>
 
-    {% for b in budgets %}
-        <p>Your amount is: ${{b["amount"]}}</p>
-        <p>The description is: {{b["description"]}}</p>
+    {% for i in incomes %}
+        <p>Your amount is: ${{"%.2f"|format(i.amount)}}</p>
+        <p>The description is: {{i.description}}</p>
     {% endfor %}
 </div>
 
 <div class="card" style="width: 18rem;">
     <h1>Your expenses:</h1>
     {% for e in expenses %}
-        <p>Your amount is: ${{e["amount"]}}</p>
-        <p>The description is: {{e["description"]}}</p>
+        <p>Your amount is: ${{"%.2f"|format(e.amount)}}</p>
+        <p>The description is: {{e.description}}</p>
     {% endfor %}
 </div>
 
+<div>
+    <h1>Totals</h1>
+    <p>Total Income: ${{"%.2f"|format(manager.get_total_income())}}</p>
+    <p>Total Expenses: ${{"%.2f"|format(manager.get_total_expense())}}</p>
+</div>
 
+<div>
+    <h1>Net Total</h1>
+    {% set net_total = manager.get_net_total() %}
+    <p>Net Total: ${{"%.2f"|format(net_total)}}</p>
+    {% if net_total > 0 %}
+        <p style="color:green">You have a surplus</p>
+    {% elif net_total < 0 %}
+        <p style="color:red">You're in a deficit</p>
+    {% else %}
+        <p>You're breaking even</p>
+    {% endif %}
+</div>
 {% endblock %}

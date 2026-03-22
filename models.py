@@ -11,16 +11,21 @@ class Entry(ABC):
         pass
 
 
-class Income_Entry(Entry):
+class IncomeEntry(Entry):
     def __init__(self, id, description, amount):
         super().__init__(id, description, amount)
 
+    def get_amount(self):
+        return self.amount
 
-class Expense_Entry(Entry):
+class ExpenseEntry(Entry):
     def __init__(self, id, description, amount):
         super().__init__(id, description, amount)
 
-class BudgetManager():
+    def get_amount(self):
+        return self.amount
+
+class BudgetManager:
     def __init__(self, incomes, expenses):
         self.incomes = incomes
         self.expenses = expenses
@@ -32,16 +37,10 @@ class BudgetManager():
         self.expenses.append(expense)
 
     def get_total_income(self):
-        total_income = 0
-        for income in self.incomes:
-            total_income += income
-        return total_income
+        return sum(income.amount for income in self.incomes)
 
     def get_total_expense(self):
-        total_expense = 0
-        for expense in self.expenses:
-            total_expense += expense
-        return total_expense
+        return sum(expense.amount for expense in self.expenses)
 
     def get_net_total(self):
         return self.get_total_income() - self.get_total_expense()
