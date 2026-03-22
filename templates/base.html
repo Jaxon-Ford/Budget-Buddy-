@@ -5,8 +5,8 @@
     <title>Budget Tracker</title>
 </head>
 <body>
-    <a href="/">index</a>
-    <a href="summary.html">summary</a>
+    <a href="{{ url_for('home') }}">index</a>
+    <a href="{{ url_for('summary') }}">summary</a>
     {% block content %}
     {% endblock %}
 </body>

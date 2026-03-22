@@ -1,21 +1,16 @@
-from flask import Flask, request, session, render_template, flash
-from models import *
+from flask import Flask, request, render_template, flash, redirect, url_for
+from methods import *
 
 app = Flask(__name__)
 app.secret_key = "secretkey123"
-
-INCOMES = []
-EXPENSES = []
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-@app.route("/income_submission", methods=["POST"])
+@app.route("/income_submission", methods=["POST", "GET"])
 def income_submission():
-    global INCOMES
-
     income_amount = request.form["amount"]
     income_description = request.form["description"]
 
@@ -38,14 +33,18 @@ def income_submission():
     if error:
         return render_template("index.html")
 
-    INCOMES.append({"id" : len(INCOMES), "amount": income_amount, "description": income_description})
-    return render_template("/index.html", income_amount=income_amount, income_description=income_description)
+    session["incomes"].append({
+        "id": len(session["incomes"]),
+        "amount": income_amount,
+        "description": income_description
+    })
+
+    print(session["incomes"])
+    return redirect(url_for("home"))
 
 
-@app.route("/expense_submission", methods=["POST"])
+@app.route("/expense_submission", methods=["POST", "GET"])
 def expense_submission():
-    global EXPENSES
-
     expense_amount = request.form["amount"]
     expense_description = request.form["description"]
 
@@ -68,23 +67,33 @@ def expense_submission():
     if error:
         return render_template("index.html")
 
-    EXPENSES.append({"id": len(EXPENSES), "amount": expense_amount, "description": expense_description})
-    return render_template("/index.html", expense_amount=expense_amount, expense_description=expense_description)
+    session["expenses"].append({
+        "id": len(session["expenses"]),
+        "amount": expense_amount,
+        "description": expense_description
+    })
+
+    print(session["expenses"])
+    return redirect(url_for("home"))
 
 
 @app.route("/summary")
 def summary():
-    global INCOMES, EXPENSES
+    incomes = load_incomes()
+    expenses = load_expenses()
+    manager = BudgetManager(incomes, expenses)
 
-    if not INCOMES and not EXPENSES:
-        return render_template("index.html")
-    return render_template("summary.html", budgets=INCOMES, expenses=EXPENSES)
+    print(session["incomes"])
+    print(session["expenses"])
+
+
+    return render_template("summary.html", incomes=incomes, expenses=expenses, manager=manager)
 
 
 @app.route("/reset")
 def reset():
     session.clear()
-    return render_template("index.html")
+    return redirect(url_for("home"))
 
 
 @app.errorhandler(404)
@@ -94,3 +103,4 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=False)
+    init_session()
