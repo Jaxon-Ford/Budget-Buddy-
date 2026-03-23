@@ -43,7 +43,6 @@ def income_submission():
     })
     session.modified = True
 
-    print(session["incomes"], "\n")
     return redirect(url_for("home"))
 
 
@@ -78,7 +77,6 @@ def expense_submission():
     })
     session.modified = True
 
-    print(session["expenses"], "\n")
     return redirect(url_for("home"))
 
 
@@ -91,9 +89,6 @@ def summary():
     if incomes == [] and expenses == []:
         flash("Please add at least one income or expense to get started")
         return redirect(url_for("home"))
-
-    print(session["incomes"], "\n")
-    print(session["expenses"], "\n")
 
     return render_template("summary.html", incomes=incomes, expenses=expenses, manager=manager)
 
