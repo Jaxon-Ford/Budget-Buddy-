@@ -44,7 +44,6 @@ def income_submission():
     })
 
     session.modified = True
-    save_incomes()
 
     print(session["incomes"])
     return redirect(url_for("home"))
@@ -81,7 +80,6 @@ def expense_submission():
     })
 
     session.modified = True
-    save_expenses()
 
     print(session["expenses"])
     return redirect(url_for("home"))

@@ -28,14 +28,6 @@ def load_expenses_into_session():
     else:
         session["expenses"] = []
 
-def save_incomes():
-    with open(INCOME_FILE, "w") as f:
-        json.dump(session["incomes"], f)
-
-def save_expenses():
-    with open(EXPENSE_FILE, "w") as f:
-        json.dump(session["expenses"], f)
-
 def load_incomes():
     return [IncomeEntry(i["id"], i["description"], i["amount"]) for i in session.get("incomes", [])]
 
