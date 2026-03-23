@@ -1,8 +1,12 @@
-from flask import Flask, request, render_template, flash, redirect, url_for
+from flask import Flask, request, render_template, flash, redirect, url_for, session
 from methods import *
 
 app = Flask(__name__)
 app.secret_key = "secretkey123"
+
+@app.before_request
+def initialize_session():
+    init_session()
 
 @app.route("/")
 def home():
@@ -39,6 +43,8 @@ def income_submission():
         "description": income_description
     })
 
+    session.modified = True
+
     print(session["incomes"])
     return redirect(url_for("home"))
 
@@ -73,6 +79,8 @@ def expense_submission():
         "description": expense_description
     })
 
+    session.modified = True
+
     print(session["expenses"])
     return redirect(url_for("home"))
 
@@ -103,4 +111,3 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=False)
-    init_session()
