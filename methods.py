@@ -14,18 +14,10 @@ def init_session():
         load_expenses_into_session()
 
 def load_incomes_into_session():
-    if os.path.exists(INCOME_FILE):
-        with open(INCOME_FILE, "r") as f:
-            session["incomes"] = json.load(f)
-    else:
         session["incomes"] = []
 
 
 def load_expenses_into_session():
-    if os.path.exists(EXPENSE_FILE):
-        with open(EXPENSE_FILE, "r") as f:
-            session["expenses"] = json.load(f)
-    else:
         session["expenses"] = []
 
 def load_incomes():
