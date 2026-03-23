@@ -17,7 +17,6 @@ def load_expenses_into_session():
 
 
 def load_incomes(income_session):
-    print("Income session: ", income_session)
     incomes = []
     for i in income_session:
         incomes.append(IncomeEntry(i["id"], i["description"], i["amount"]))
