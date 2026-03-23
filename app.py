@@ -1,19 +1,18 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, session
-from methods import *
+from models import BudgetManager
+from methods import init_session, load_incomes, load_expenses
 
 app = Flask(__name__)
 app.secret_key = "secretkey123"
 
-@app.before_request
-def initialize_session():
-    init_session()
 
 @app.route("/")
 def home():
+    init_session()
     return render_template("index.html")
 
 
-@app.route("/income_submission", methods=["POST", "GET"])
+@app.route("/income_submission", methods=["POST"])
 def income_submission():
     income_amount = request.form["amount"]
     income_description = request.form["description"]
@@ -42,14 +41,13 @@ def income_submission():
         "amount": income_amount,
         "description": income_description
     })
-
     session.modified = True
 
-    print(session["incomes"])
+    print(session["incomes"], "\n")
     return redirect(url_for("home"))
 
 
-@app.route("/expense_submission", methods=["POST", "GET"])
+@app.route("/expense_submission", methods=["POST"])
 def expense_submission():
     expense_amount = request.form["amount"]
     expense_description = request.form["description"]
@@ -78,22 +76,24 @@ def expense_submission():
         "amount": expense_amount,
         "description": expense_description
     })
-
     session.modified = True
 
-    print(session["expenses"])
+    print(session["expenses"], "\n")
     return redirect(url_for("home"))
 
 
 @app.route("/summary")
 def summary():
-    incomes = load_incomes()
-    expenses = load_expenses()
+    incomes = load_incomes(session["incomes"])
+    expenses = load_expenses(session["expenses"])
     manager = BudgetManager(incomes, expenses)
 
-    print(session["incomes"])
-    print(session["expenses"])
+    if incomes == [] and expenses == []:
+        flash("Please add at least one income or expense to get started")
+        return redirect(url_for("home"))
 
+    print(session["incomes"], "\n")
+    print(session["expenses"], "\n")
 
     return render_template("summary.html", incomes=incomes, expenses=expenses, manager=manager)
 
